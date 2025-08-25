@@ -1,7 +1,7 @@
 # Teststrategi
 
 ## Overordnet teststrategi og mål:
-Denne teststrategien er for mod at sikre høj softwarekvalitet, reducere risici og øge vedligeholdelsesvenlighed på tværs af alle udviklingsprojekter, herunder dem demonstreret i vores GitHub-repository. Vores filosofi er at prioritere tidlig fejlfinding, robusthed og skalerbarhed gennem en struktureret testtilgang, der balancerer forskellige testniveauer og -typer for at opnå omfattende dækning og tillid til softwarens pålidelighed. Målet er at levere produkter, der opfylder bruger- og forretningskrav, overholder tekniske standarder og minimerer teknisk gæld, samtidig med at vi understøtter løbende forbedring gennem standardiserede værktøjer, metoder og målinger.
+Denne teststrategien er for at sikre høj softwarekvalitet, reducere risici og øge vedligeholdelsesvenlighed på tværs af alle udviklingsprojekter, herunder dem demonstreret i vores GitHub-repository. Vores filosofi er at prioritere tidlig fejlfinding, robusthed og skalerbarhed gennem en struktureret testtilgang, der balancerer forskellige testniveauer og -typer for at opnå omfattende dækning og tillid til softwarens pålidelighed. Målet er at levere produkter, der opfylder bruger- og forretningskrav, overholder tekniske standarder og minimerer teknisk gæld, samtidig med at vi understøtter løbende forbedring gennem standardiserede værktøjer, metoder og målinger.
 
 
 ## Testniveauer og typer:

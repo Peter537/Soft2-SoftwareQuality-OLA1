@@ -48,6 +48,17 @@ public class UnitTests
     }
 
     [TestMethod]
+    public void UpdateTask_ShouldNotCallUpdateIfTaskNotExists()
+    {
+        // Tests: Edge case for null task
+        // Should do: Not call repository Update when task doesn't exist
+        // Targets surviving mutant: (task != null) to (task == null)
+        _mockRepo.Setup(r => r.GetById(1)).Returns((Task?)null);
+        _manager.UpdateTask(1, "New");
+        _mockRepo.Verify(r => r.Update(It.IsAny<Task>()), Times.Never);
+    }
+
+    [TestMethod]
     public void DeleteTask_ShouldCallRepositoryDelete()
     {
         // Tests: Actual output? No return, but interaction.
@@ -72,6 +83,40 @@ public class UnitTests
     }
 
     [TestMethod]
+    public void MarkCompleted_ShouldNotCallUpdateIfTaskNotExists()
+    {
+        // Tests: Edge case for null task in MarkCompleted
+        // Should do: Not call repository Update when task doesn't exist
+        // Targets surviving mutant: (task != null) to (task == null)
+        _mockRepo.Setup(r => r.GetById(1)).Returns((Task?)null);
+        _manager.MarkCompleted(1);
+        _mockRepo.Verify(r => r.Update(It.IsAny<Task>()), Times.Never);
+    }
+
+    [TestMethod]
+    public void MarkCompleted_ShouldCallUpdateWhenTaskExists()
+    {
+        // Tests: Verify Update is actually called when task exists
+        // Targets surviving mutant: _repository.Update(task); to ;
+        var task = new Task { Id = 1, IsCompleted = false };
+        _mockRepo.Setup(r => r.GetById(1)).Returns(task);
+        _manager.MarkCompleted(1);
+        _mockRepo.Verify(r => r.Update(task), Times.Once);
+    }
+
+    [TestMethod]
+    public void MarkCompleted_ShouldSetIsCompletedToTrue()
+    {
+        // Tests: Verify IsCompleted is set to true, not false
+        // Targets surviving mutant: task.IsCompleted = true; to task.IsCompleted = false;
+        var task = new Task { Id = 1, IsCompleted = false };
+        _mockRepo.Setup(r => r.GetById(1)).Returns(task);
+        _manager.MarkCompleted(1);
+        Assert.IsTrue(task.IsCompleted);
+        Assert.AreNotEqual(false, task.IsCompleted);
+    }
+
+    [TestMethod]
     public void GetTasksByCategory_ShouldReturnFromRepo()
     {
         // Setup stub: Return list.
@@ -92,5 +137,38 @@ public class UnitTests
         _mockRepo.Setup(r => r.Add(It.IsAny<Task>())).Callback<Task>(t => capturedTask = t);
         _manager.AddTask("Test", "Work", null);
         Assert.AreEqual("Work", capturedTask.Category);
+    }
+
+    [TestMethod]
+    public void Task_DefaultValues_ShouldBeCorrect()
+    {
+        // Tests: Default property values to catch string mutations
+        // Targets surviving mutants in Task.cs default values
+        var task = new Task();
+        Assert.AreEqual(string.Empty, task.Description);
+        Assert.AreEqual("Default", task.Category);
+        Assert.IsFalse(task.IsCompleted);
+        Assert.AreEqual(0, task.Id);
+        Assert.IsNull(task.Deadline);
+    }
+
+    [TestMethod]
+    public void Task_DescriptionDefaultValue_ShouldNotBeStrykerMessage()
+    {
+        // Tests: Ensure description is empty string, not "Stryker was here!"
+        // Targets surviving mutant: string.Empty to "Stryker was here!"
+        var task = new Task();
+        Assert.AreNotEqual("Stryker was here!", task.Description);
+        Assert.AreEqual(string.Empty, task.Description);
+    }
+
+    [TestMethod]
+    public void Task_CategoryDefaultValue_ShouldNotBeEmpty()
+    {
+        // Tests: Ensure category is "Default", not empty string
+        // Targets surviving mutant: "Default" to ""
+        var task = new Task();
+        Assert.AreNotEqual("", task.Category);
+        Assert.AreEqual("Default", task.Category);
     }
 }

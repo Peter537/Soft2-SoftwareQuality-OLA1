@@ -41,4 +41,79 @@ public class IntegrationTests
         Assert.AreEqual("Updated", updated.Description);
         Assert.IsTrue(updated.IsCompleted);
     }
+
+    [TestMethod]
+    public void UpdateNonExistentTask_ShouldNotThrow()
+    {
+        // Test: Updating non-existent task should be safe
+        // Ensures: Null check works in real scenario
+        _manager.UpdateTask(999, "NonExistent");
+        // Should complete without throwing
+        Assert.IsTrue(true);
+    }
+
+    [TestMethod]
+    public void MarkCompletedNonExistentTask_ShouldNotThrow()
+    {
+        // Test: Marking non-existent task as completed should be safe
+        // Ensures: Null check works in real scenario
+        _manager.MarkCompleted(999);
+        // Should complete without throwing
+        Assert.IsTrue(true);
+    }
+
+    [TestMethod]
+    public void DeleteTask_ShouldRemoveFromRepository()
+    {
+        // Test: Delete removes task completely
+        // Ensures: Delete works end-to-end
+        _manager.AddTask("ToDelete", "Test", null);
+        var task = _manager.GetTasksByCategory("Test").First();
+        int taskId = task.Id;
+        
+        _manager.DeleteTask(taskId);
+        
+        var tasks = _manager.GetTasksByCategory("Test");
+        Assert.AreEqual(0, tasks.Count());
+    }
+
+    [TestMethod]
+    public void TaskWithDeadline_Integration()
+    {
+        // Test: Tasks with deadlines work correctly
+        var deadline = DateTime.Now.AddDays(7);
+        _manager.AddTask("DeadlineTask", "Work", deadline);
+        
+        var task = _manager.GetTasksByCategory("Work").First();
+        Assert.AreEqual(deadline, task.Deadline);
+    }
+
+    [TestMethod]
+    public void MultipleCategories_ShouldBeIndependent()
+    {
+        // Test: Different categories are isolated
+        _manager.AddTask("Work1", "Work", null);
+        _manager.AddTask("Personal1", "Personal", null);
+        _manager.AddTask("Work2", "Work", null);
+        
+        var workTasks = _manager.GetTasksByCategory("Work");
+        var personalTasks = _manager.GetTasksByCategory("Personal");
+        
+        Assert.AreEqual(2, workTasks.Count());
+        Assert.AreEqual(1, personalTasks.Count());
+    }
+
+    [TestMethod]
+    public void TaskDefaultProperties_ShouldBeSet()
+    {
+        // Test: Default properties are set correctly during creation
+        _manager.AddTask("TestTask", "TestCat", null);
+        var task = _manager.GetTasksByCategory("TestCat").First();
+        
+        Assert.IsFalse(task.IsCompleted);
+        Assert.IsNull(task.Deadline);
+        Assert.AreEqual("TestTask", task.Description);
+        Assert.AreEqual("TestCat", task.Category);
+        Assert.IsTrue(task.Id > 0);
+    }
 }

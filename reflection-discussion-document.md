@@ -1,6 +1,7 @@
 # Reflektions og Diskussions dokument
 
 I udviklingen af To Do Liste applikationen bidrager hver testtype til softwarekvaliteten på unikke måder:
+
 - Unit-tests sikrer isoleret logik og tidlig fejlfinding, hvilket øger vedligeholdelsesvenligheden ved at fange fejl hurtigt.
 - Integrationstests verificerer komponentinteraktioner for at forhindre grænseflade og dataflow problemer, der kunne kompromittere systemets stabilitet.
 - Specifikationsbaserede tests validerer mod krav for at garantere brugerværdi.
